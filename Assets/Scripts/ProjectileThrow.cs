@@ -5,24 +5,16 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(TrajectoryPredictor))]
 public class ProjectileThrow : MonoBehaviour
 {
+    [SerializeField, Range(0.0f, 50.0f)] float force;
+
+    [SerializeField, Range(0.0f, 50.0f)] float gravityScale;
+
+    [SerializeField] Transform StartPosition;
+
+    [SerializeField] Rigidbody objectToThrow;
+
+
     TrajectoryPredictor trajectoryPredictor;
-
-
-
-    [SerializeField, Range(0.0f, 50.0f)]
-    float force;
-
-    [SerializeField, Range(0.0f, -50.0f)]
-    float gravityScale;
-
-    [SerializeField]
-    Transform StartPosition;
-
-    [SerializeField]
-    Rigidbody objectToThrow;
-
-    [SerializeField] CameraManager cameraManager;
-
     public InputAction fire;
 
     void OnEnable()
@@ -40,7 +32,7 @@ public class ProjectileThrow : MonoBehaviour
     {
         Predict();
 
-        Physics.gravity = new Vector3(0, gravityScale, 0);
+        Physics.gravity = new Vector3(0, -gravityScale, 0);
     }
 
     void Predict()
@@ -64,21 +56,11 @@ public class ProjectileThrow : MonoBehaviour
 
     void ThrowObject(InputAction.CallbackContext ctx)
     {
-        var startTime = Time.time;
+        CameraManager.i.StartTransitionTo();
+
         Rigidbody thrownObject = Instantiate(objectToThrow, StartPosition.position, Quaternion.identity);
         thrownObject.AddForce(StartPosition.forward * force, ForceMode.Impulse);
-        cameraManager.StartTransitionTo();
 
-       StartCoroutine(TransitionBackAfterDelay(startTime));
-    }
-
-    private IEnumerator TransitionBackAfterDelay(float startTime)
-    {
-        while (Time.time - startTime < 5.0f)
-        {
-            yield return null;
-        }
-
-        cameraManager.StartTransitionBack();
+        trajectoryPredictor.SpawnBalls(ProjectileData());
     }
 }

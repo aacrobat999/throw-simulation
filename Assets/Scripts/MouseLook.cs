@@ -50,7 +50,13 @@ public class MouseLook : MonoBehaviour
 
         Vector2 mouseDelta = input.pActionMap.MouseLook.ReadValue<Vector2>();
         mouseFinal += ScaleAndSmooth(mouseDelta);
-        Debug.Log(mouseFinal.ToString());
+
+        if (CameraManager.i.currentCamera == 2)
+            input.Disable();
+        else
+            input.Enable();
+
+       // Debug.Log(mouseFinal.ToString());
 
         ClampValues();
         AlignToBody();
