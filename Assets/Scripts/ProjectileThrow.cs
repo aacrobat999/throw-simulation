@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,8 +21,7 @@ public class ProjectileThrow : MonoBehaviour
     [SerializeField]
     Rigidbody objectToThrow;
 
-    [SerializeField]
-    Camera shotViewCam;
+    [SerializeField] CameraManager cameraManager;
 
     public InputAction fire;
 
@@ -64,7 +64,21 @@ public class ProjectileThrow : MonoBehaviour
 
     void ThrowObject(InputAction.CallbackContext ctx)
     {
+        var startTime = Time.time;
         Rigidbody thrownObject = Instantiate(objectToThrow, StartPosition.position, Quaternion.identity);
         thrownObject.AddForce(StartPosition.forward * force, ForceMode.Impulse);
+        cameraManager.StartTransitionTo();
+
+       StartCoroutine(TransitionBackAfterDelay(startTime));
+    }
+
+    private IEnumerator TransitionBackAfterDelay(float startTime)
+    {
+        while (Time.time - startTime < 5.0f)
+        {
+            yield return null;
+        }
+
+        cameraManager.StartTransitionBack();
     }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1162,7 +1162,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1015919664
 Transform:
   m_ObjectHideFlags: 0
@@ -1346,6 +1346,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1060424589}
+  - component: {fileID: 1060424590}
   m_Layer: 0
   m_Name: Cameras
   m_TagString: Untagged
@@ -1369,6 +1370,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1060424590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1060424588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b819380c622373941bb327597219f226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera1: {fileID: 330585545}
+  camera2: {fileID: 1015919667}
 --- !u!1001 &1070792540
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2142,11 +2157,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cae881c39ecfb049a0c3aa8b4ece69a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToThrow: {fileID: 7804654149948344941, guid: c23187c21be2d444d8f8c6f9f1ee676d,
-    type: 3}
   force: 5
   gravityScale: -9.81
   StartPosition: {fileID: 1813302272}
+  objectToThrow: {fileID: 7804654149948344941, guid: c23187c21be2d444d8f8c6f9f1ee676d,
+    type: 3}
+  cameraManager: {fileID: 1060424590}
   fire:
     m_Name: Fire
     m_Type: 1
@@ -2818,7 +2834,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82611f3774e177649b948c28eae535ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clampInDegrees: {x: 360, y: 360}
+  clampInDegrees: {x: 180, y: 180}
   sensitivity: {x: 0.03, y: 0.02}
   smoothing: {x: 2, y: 2}
   lockCursor: 1

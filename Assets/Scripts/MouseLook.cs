@@ -50,6 +50,7 @@ public class MouseLook : MonoBehaviour
 
         Vector2 mouseDelta = input.pActionMap.MouseLook.ReadValue<Vector2>();
         mouseFinal += ScaleAndSmooth(mouseDelta);
+        Debug.Log(mouseFinal.ToString());
 
         ClampValues();
         AlignToBody();
