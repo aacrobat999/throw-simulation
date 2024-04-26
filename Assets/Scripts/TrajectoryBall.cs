@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class TrajectoryBall : MonoBehaviour
 {
-    private bool isMouseOver = false;
-    [SerializeField] GameObject directionArrow; 
+    [SerializeField] GameObject directionArrow;
+
+    bool isMouseOver = false;
+    Rigidbody thrownObject;
+
 
     void Update()
     {
@@ -16,26 +19,30 @@ public class TrajectoryBall : MonoBehaviour
     private void OnMouseEnter()
     {
         isMouseOver = true;
-
-        directionArrow = Instantiate(directionArrow, transform.position, Quaternion.identity, transform);
-        UpdateArrowDirection(transform.forward);
+        directionArrow.SetActive(true);
     }
 
     private void OnMouseExit()
     {
         isMouseOver = false;
-
-        if (directionArrow != null)
-        {
-            Destroy(directionArrow);
-        }
+        directionArrow.SetActive(false);
     }
 
-    private void UpdateArrowDirection(Vector3 direction)
+    public void SetThrownObject(Rigidbody thrownObject)
     {
-        if (directionArrow != null)
+        this.thrownObject = thrownObject;
+        SetArrowDirection();
+    }
+
+    private void SetArrowDirection()
+    {
+        if (thrownObject != null)
         {
-            directionArrow.transform.rotation = Quaternion.LookRotation(direction);
+            Vector3 velocity = thrownObject.velocity;
+            Vector3 direction = velocity.normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+
+            directionArrow.transform.rotation = targetRotation;
         }
     }
 }

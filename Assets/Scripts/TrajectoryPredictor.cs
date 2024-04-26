@@ -57,7 +57,6 @@ public class TrajectoryPredictor : MonoBehaviour
         }
     }
 
-
     public void PredictTrajectory(ProjectileProperties projectile)
     {
         Vector3 velocity = projectile.direction * (projectile.initialSpeed / projectile.mass);

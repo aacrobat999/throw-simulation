@@ -11,7 +11,7 @@ public class ProjectileThrow : MonoBehaviour
 
     [SerializeField] Transform StartPosition;
 
-    [SerializeField] Rigidbody objectToThrow;
+    [SerializeField] CannonBall objectToThrow;
 
 
     TrajectoryPredictor trajectoryPredictor;
@@ -58,9 +58,15 @@ public class ProjectileThrow : MonoBehaviour
     {
         CameraManager.i.StartTransitionTo();
 
-        Rigidbody thrownObject = Instantiate(objectToThrow, StartPosition.position, Quaternion.identity);
-        thrownObject.AddForce(StartPosition.forward * force, ForceMode.Impulse);
+        CannonBall thrownObject = Instantiate(objectToThrow, StartPosition.position, Quaternion.identity);
+        thrownObject.rigidBody.AddForce(StartPosition.forward * force, ForceMode.Impulse);
 
         trajectoryPredictor.SpawnBalls(ProjectileData());
+
+        TrajectoryBall[] trajectoryBalls = FindObjectsOfType<TrajectoryBall>();
+        foreach (TrajectoryBall ball in trajectoryBalls)
+        {
+            ball.SetThrownObject(thrownObject.rigidBody);
+        }
     }
 }

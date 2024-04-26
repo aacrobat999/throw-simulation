@@ -2326,7 +2326,7 @@ MonoBehaviour:
   force: 5
   gravityScale: 9.81
   StartPosition: {fileID: 1813302272}
-  objectToThrow: {fileID: 7804654149948344941, guid: c23187c21be2d444d8f8c6f9f1ee676d,
+  objectToThrow: {fileID: -7496753467032105144, guid: c23187c21be2d444d8f8c6f9f1ee676d,
     type: 3}
   fire:
     m_Name: Fire
