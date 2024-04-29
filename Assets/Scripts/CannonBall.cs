@@ -10,7 +10,7 @@ public class CannonBall : MonoBehaviour
     {
         if (!hasHitGround && collision.collider.CompareTag("Ground"))
         {
-            CameraManager.i.StartTransitionBack();
+            CameraManager.i.StartTransitionBackToMain();
             hasHitGround = true;
         }
     }

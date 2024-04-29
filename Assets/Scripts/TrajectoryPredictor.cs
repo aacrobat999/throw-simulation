@@ -8,6 +8,9 @@ public class TrajectoryPredictor : MonoBehaviour
     [SerializeField, Tooltip("The marker will show where the projectile will hit")]
     Transform hitMarker;
 
+    [SerializeField, Tooltip("The trajectory ball prefab")]
+    GameObject trajectoryBallPrefab;
+
     [SerializeField, Range(10, 100), Tooltip("The maximum number of points the LineRenderer can have")]
     int maxPoints = 50;
 
@@ -17,10 +20,16 @@ public class TrajectoryPredictor : MonoBehaviour
     [SerializeField, Range(1.05f, 2f), Tooltip("The raycast overlap between points in the trajectory, this is a multiplier of the length between points. 2 = twice as long")]
     float rayOverlap = 1.1f;
 
-    LineRenderer trajectoryLine;
-    public GameObject ballPrefab;
-    private List<GameObject> trajectoryBalls = new List<GameObject>();
+    [SerializeField, Tooltip("To display all arrows check it as true")]
+    public bool displayAllArrows = false;
 
+    public static TrajectoryPredictor i { get; private set; }
+
+    LineRenderer trajectoryLine;
+    List<GameObject> trajectoryBalls = new List<GameObject>();
+
+
+    private void Awake() => i = this;
 
     private void Start()
     {
@@ -30,7 +39,7 @@ public class TrajectoryPredictor : MonoBehaviour
         SetTrajectoryVisible(true);
     }
 
-    public void SpawnBalls(ProjectileProperties projectile)
+    public void SpawnTrajectoryBalls(ProjectileProperties projectile)
     {
         ClearTrajectoryBalls();
 
@@ -45,7 +54,7 @@ public class TrajectoryPredictor : MonoBehaviour
 
             if (i % 2 == 0)
             {
-                GameObject ball = Instantiate(ballPrefab, position, Quaternion.identity);
+                GameObject ball = Instantiate(trajectoryBallPrefab, position, Quaternion.identity);
                 trajectoryBalls.Add(ball);
 
                 Vector3 currentDirection = CalculateNewVelocity(velocity, projectile.drag, increment).normalized;
@@ -87,8 +96,6 @@ public class TrajectoryPredictor : MonoBehaviour
             UpdateLineRender(maxPoints, (i, position));
         }
     }
-
-
     private void ClearTrajectoryBalls()
     {
         foreach (GameObject ball in trajectoryBalls)
@@ -124,5 +131,15 @@ public class TrajectoryPredictor : MonoBehaviour
     {
         trajectoryLine.enabled = visible;
         hitMarker.gameObject.SetActive(visible);
+    }
+
+    public List<Vector3> GetTrajectoryBallPositions()
+    {
+        List<Vector3> positions = new List<Vector3>();
+        foreach (GameObject ball in trajectoryBalls)
+        {
+            positions.Add(ball.transform.position);
+        }
+        return positions;
     }
 }

@@ -53,10 +53,10 @@ public class MouseLook : MonoBehaviour
 
         if (CameraManager.i.currentCamera == 2)
             input.Disable();
+        else if (CameraManager.i.currentCamera == 3)
+            input.Disable();
         else
             input.Enable();
-
-       // Debug.Log(mouseFinal.ToString());
 
         ClampValues();
         AlignToBody();
