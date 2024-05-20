@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class CannonBall : MonoBehaviour
 {
-    [HideInInspector] public bool hasHitGround = false;
     [SerializeField] public Rigidbody rigidBody;
+
+    [HideInInspector] public bool hasHitGround = false;
 
     private void OnCollisionEnter(Collision collision)
     {

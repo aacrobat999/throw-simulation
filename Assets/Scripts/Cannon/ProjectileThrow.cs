@@ -1,8 +1,8 @@
-using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
+using UnityEngine.Windows;
 
 [RequireComponent(typeof(TrajectoryPredictor))]
 public class ProjectileThrow : MonoBehaviour
@@ -17,12 +17,18 @@ public class ProjectileThrow : MonoBehaviour
 
     [SerializeField] CannonBall objectToThrow;
 
+    [SerializeField] TextMeshProUGUI distanceText;
+
     [HideInInspector] public CannonBall thrownObject;
+    [HideInInspector] public Vector3 startingPosition;
 
     TrajectoryPredictor trajectoryPredictor;
     public InputAction fire;
 
-
+    private void Awake()
+    {
+        startingPosition = transform.position;
+    }
 
     void OnEnable()
     {
@@ -66,12 +72,15 @@ public class ProjectileThrow : MonoBehaviour
         {
             CameraManager.i.StartTransitionTo();
 
+            // Throw the object
             thrownObject = Instantiate(objectToThrow, StartPosition.position, Quaternion.identity);
             thrownObject.rigidBody.AddForce(StartPosition.forward * force, ForceMode.Impulse);
 
             trajectoryPredictor.SpawnTrajectoryBalls(ProjectileData());
         }
     }
+
+    public void UpdateDistanceText(float distance) => distanceText.text = distance.ToString("F2");
 
     #region UI
 
@@ -119,6 +128,29 @@ public class ProjectileThrow : MonoBehaviour
             else
             {
                 force = newForce;
+            }
+        }
+    }
+    public void ChangeHeightValue(TMP_InputField input)
+    {
+        if (string.IsNullOrEmpty(input.text))
+            return;
+
+        if (float.TryParse(input.text, out float newHeight))
+        {
+            if (newHeight <= 1.74)
+            {
+                transform.position = new Vector3(0, 0, 0) + startingPosition;
+                input.text = transform.position.y.ToString();
+            }
+            else if (newHeight >= 20)
+            {
+                transform.position = new Vector3(0, 20, 0) + startingPosition;
+                input.text = transform.position.y.ToString();
+            }
+            else
+            {
+                transform.position = new Vector3(0, newHeight, 0) + startingPosition;
             }
         }
     }

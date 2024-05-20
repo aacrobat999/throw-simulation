@@ -32,9 +32,14 @@ public class UISlider : MonoBehaviour
         input.text = slider.value.ToString("F2");
         projectile.force = slider.value;
     }
-    public void ChangePointValue(TrajectoryPredictor projectile)
+    public void ChangePointValue(TrajectoryPredictor predictor)
     {
         input.text = slider.value.ToString("F2");
-        projectile.maxPoints = (int)slider.value;
+        predictor.maxPoints = (int)slider.value;
+    }
+    public void ChangeHiegthValue(ProjectileThrow projectile)
+    {
+        input.text = slider.value.ToString("F2");
+        projectile.transform.position = new Vector3(0, slider.value, 0) + projectile.startingPosition;
     }
 }

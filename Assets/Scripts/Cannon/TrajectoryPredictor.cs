@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -25,11 +24,20 @@ public class TrajectoryPredictor : MonoBehaviour
     [SerializeField, Tooltip("To display all arrows check it as true")]
     public bool displayAllArrows = false;
 
+    [SerializeField] TextMeshProUGUI highestPointText;
+    [SerializeField] TextMeshProUGUI totalDistanceText;
+    [SerializeField] TextMeshProUGUI horizontalDistanceText;
+    [SerializeField] TextMeshProUGUI currentVelocityText;
+
+    float highestPoint;
+    float totalDistance;
+    float horizontalDistance;
+    float currentVelocity;
+
     public static TrajectoryPredictor i { get; private set; }
 
     LineRenderer trajectoryLine;
     List<GameObject> trajectoryBalls = new List<GameObject>();
-
 
     private void Awake() => i = this;
 
@@ -49,10 +57,25 @@ public class TrajectoryPredictor : MonoBehaviour
         Vector3 velocity = projectile.direction * (projectile.initialSpeed / projectile.mass);
         Vector3 position = projectile.initialPosition;
 
+        highestPoint = position.y;
+        totalDistance = 0f;
+        horizontalDistance = 0f;
+
         for (int i = 0; i < maxPoints; i++)
         {
             velocity = CalculateNewVelocity(velocity, projectile.drag, increment);
-            position += velocity * increment;
+            Vector3 nextPosition = position + velocity * increment;
+
+            currentVelocity = velocity.magnitude;
+
+            if (nextPosition.y > highestPoint)
+            {
+                highestPoint = nextPosition.y;
+            }
+
+            totalDistance += Vector3.Distance(position, nextPosition);
+            horizontalDistance += Mathf.Abs(nextPosition.x - position.x);
+            position = nextPosition;
 
             if (i % 2 == 0)
             {
@@ -64,6 +87,12 @@ public class TrajectoryPredictor : MonoBehaviour
                         GameObject ball = Instantiate(trajectoryBallPrefab, position, Quaternion.identity);
                         trajectoryBalls.Add(ball);
 
+                        TrajectoryBall trajectoryBall = ball.GetComponent<TrajectoryBall>();
+                        if (trajectoryBall != null)
+                        {
+                            trajectoryBall.SetVelocity(currentVelocity);
+                        }
+
                         Vector3 currentDirection = CalculateNewVelocity(velocity, projectile.drag, increment).normalized;
                         ball.transform.LookAt(ball.transform.position + currentDirection);
                     }
@@ -72,6 +101,8 @@ public class TrajectoryPredictor : MonoBehaviour
 
             trajectoryLine.SetPosition(i, position);
         }
+
+        UpdateUI();
     }
 
 
@@ -82,6 +113,10 @@ public class TrajectoryPredictor : MonoBehaviour
         Vector3 nextPosition;
         float overlap;
 
+        highestPoint = position.y;
+        totalDistance = 0f;
+        horizontalDistance = 0f;
+
         UpdateLineRender(maxPoints, (0, position));
 
         for (int i = 1; i < maxPoints; i++)
@@ -89,7 +124,17 @@ public class TrajectoryPredictor : MonoBehaviour
             velocity = CalculateNewVelocity(velocity, projectile.drag, increment);
             nextPosition = position + velocity * increment;
 
-            overlap = Vector3.Distance(position, nextPosition) * rayOverlap;
+            currentVelocity = velocity.magnitude;
+
+            if (nextPosition.y > highestPoint)
+            {
+                highestPoint = nextPosition.y;
+            }
+
+            totalDistance += CalculateDistance(position, nextPosition);
+            horizontalDistance += Mathf.Abs(nextPosition.x - position.x);
+
+            overlap = CalculateDistance(position, nextPosition) * rayOverlap;
 
             int layerMask = ~(1 << LayerMask.NameToLayer("TrajectoryBall"));
 
@@ -104,7 +149,10 @@ public class TrajectoryPredictor : MonoBehaviour
             position = nextPosition;
             UpdateLineRender(maxPoints, (i, position));
         }
+
+        UpdateUI();
     }
+
     private void ClearTrajectoryBalls()
     {
         foreach (GameObject ball in trajectoryBalls)
@@ -152,6 +200,24 @@ public class TrajectoryPredictor : MonoBehaviour
         return positions;
     }
 
+    void UpdateUI()
+    {
+        highestPointText.text = highestPoint.ToString("F2");
+        totalDistanceText.text = totalDistance.ToString("F2");
+        horizontalDistanceText.text = horizontalDistance.ToString("F2");
+        currentVelocityText.text = currentVelocity.ToString("F2");
+    }
+
+    public float CalculateDistance(Vector3 a, Vector3 b)
+    {
+        float num = a.x - b.x;
+        float num2 = a.y - b.y;
+        float num3 = a.z - b.z;
+        return Mathf.Sqrt(num * num + num2 * num2 + num3 * num3);
+    }
+
+    #region UI
+
     public void DisplayAllArrows(Toggle newValue)
     {
         displayAllArrows = newValue.isOn;
@@ -166,10 +232,10 @@ public class TrajectoryPredictor : MonoBehaviour
         {
             if (newMaxPoints <= 1)
             {
-                maxPoints = -20;
+                maxPoints = 1;
                 input.text = maxPoints.ToString();
             }
-            else if (newMaxPoints >= 50)
+            else if (newMaxPoints >= 150)
             {
                 maxPoints = 150;
                 input.text = maxPoints.ToString();
@@ -180,4 +246,6 @@ public class TrajectoryPredictor : MonoBehaviour
             }
         }
     }
+
+    #endregion
 }

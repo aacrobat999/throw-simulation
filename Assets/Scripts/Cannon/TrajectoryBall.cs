@@ -3,17 +3,24 @@ using UnityEngine;
 public class TrajectoryBall : MonoBehaviour
 {
     [SerializeField] GameObject directionArrow;
+    float velocityValue;
 
     [HideInInspector] public bool isMouseOver = false;
 
     public void Update()
     {
-        /*if (isMouseOver)
-            Debug.Log(transform.forward);
-        */
+        if (isMouseOver)
+        {
+            Debug.Log("Velocity at this point: " + velocityValue);
+        }
 
         if (!isMouseOver)
             directionArrow.SetActive(TrajectoryPredictor.i.displayAllArrows);
+    }
+
+    public void SetVelocity(float velocity)
+    {
+        velocityValue = velocity;
     }
 
     private void OnMouseEnter()
@@ -27,5 +34,4 @@ public class TrajectoryBall : MonoBehaviour
         isMouseOver = false;
         directionArrow.SetActive(false);
     }
-
 }
