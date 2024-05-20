@@ -4,15 +4,16 @@ public class TrajectoryBall : MonoBehaviour
 {
     [SerializeField] GameObject directionArrow;
 
-    bool isMouseOver = false;
+    [HideInInspector] public bool isMouseOver = false;
 
     public void Update()
     {
         /*if (isMouseOver)
             Debug.Log(transform.forward);
         */
-        if (TrajectoryPredictor.i.displayAllArrows)
-            directionArrow.SetActive(true);
+
+        if (!isMouseOver)
+            directionArrow.SetActive(TrajectoryPredictor.i.displayAllArrows);
     }
 
     private void OnMouseEnter()

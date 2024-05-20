@@ -16,8 +16,9 @@ public class MouseLook : MonoBehaviour
     public GameObject characterBody;
 
     public PlayerInputActions input;
+    [HideInInspector] public bool isInUI;
     #endregion
-    
+
     private void OnEnable()
     {
         input = new PlayerInputActions();
@@ -26,6 +27,8 @@ public class MouseLook : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+
         targetDirection = transform.localRotation.eulerAngles;
 
         if (characterBody)
@@ -45,18 +48,21 @@ public class MouseLook : MonoBehaviour
 
     void LateUpdate()
     {
-        if (lockCursor)
-            Cursor.lockState = CursorLockMode.Locked;
-
         Vector2 mouseDelta = input.pActionMap.MouseLook.ReadValue<Vector2>();
         mouseFinal += ScaleAndSmooth(mouseDelta);
 
-        if (CameraManager.i.currentCamera == 2)
+        if (CameraManager.i.currentCamera == 2 || CameraManager.i.currentCamera == 3)
+        {
+            isInUI = true;
             input.Disable();
-        else if (CameraManager.i.currentCamera == 3)
-            input.Disable();
+            Cursor.lockState = CursorLockMode.None;
+        }
         else
+        {
+            isInUI = false;
             input.Enable();
+            Cursor.lockState = CursorLockMode.Locked;
+        }
 
         ClampValues();
         AlignToBody();

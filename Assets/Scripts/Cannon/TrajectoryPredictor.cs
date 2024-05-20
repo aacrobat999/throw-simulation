@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(LineRenderer))]
 public class TrajectoryPredictor : MonoBehaviour
@@ -12,7 +14,7 @@ public class TrajectoryPredictor : MonoBehaviour
     GameObject trajectoryBallPrefab;
 
     [SerializeField, Range(10, 100), Tooltip("The maximum number of points the LineRenderer can have")]
-    int maxPoints = 50;
+    public int maxPoints = 50;
 
     [SerializeField, Range(0.01f, 0.5f), Tooltip("The time increment used to calculate the trajectory")]
     float increment = 0.025f;
@@ -54,17 +56,24 @@ public class TrajectoryPredictor : MonoBehaviour
 
             if (i % 2 == 0)
             {
-                GameObject ball = Instantiate(trajectoryBallPrefab, position, Quaternion.identity);
-                trajectoryBalls.Add(ball);
+                Ray ray = new Ray(position, Vector3.down);
+                if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+                {
+                    if (hit.distance > 0)
+                    {
+                        GameObject ball = Instantiate(trajectoryBallPrefab, position, Quaternion.identity);
+                        trajectoryBalls.Add(ball);
 
-                Vector3 currentDirection = CalculateNewVelocity(velocity, projectile.drag, increment).normalized;
-
-                ball.transform.LookAt(ball.transform.position + currentDirection);
+                        Vector3 currentDirection = CalculateNewVelocity(velocity, projectile.drag, increment).normalized;
+                        ball.transform.LookAt(ball.transform.position + currentDirection);
+                    }
+                }
             }
 
             trajectoryLine.SetPosition(i, position);
         }
     }
+
 
     public void PredictTrajectory(ProjectileProperties projectile)
     {
@@ -141,5 +150,34 @@ public class TrajectoryPredictor : MonoBehaviour
             positions.Add(ball.transform.position);
         }
         return positions;
+    }
+
+    public void DisplayAllArrows(Toggle newValue)
+    {
+        displayAllArrows = newValue.isOn;
+    }
+
+    public void ChangeTrailPoints(TMP_InputField input)
+    {
+        if (string.IsNullOrEmpty(input.text))
+            return;
+
+        if (int.TryParse(input.text, out int newMaxPoints))
+        {
+            if (newMaxPoints <= 1)
+            {
+                maxPoints = -20;
+                input.text = maxPoints.ToString();
+            }
+            else if (newMaxPoints >= 50)
+            {
+                maxPoints = 150;
+                input.text = maxPoints.ToString();
+            }
+            else
+            {
+                maxPoints = newMaxPoints;
+            }
+        }
     }
 }

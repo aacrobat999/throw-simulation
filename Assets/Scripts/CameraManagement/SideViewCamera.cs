@@ -8,7 +8,6 @@ public class SideViewCamera : MonoBehaviour
     [SerializeField] TrajectoryPredictor trajectoryPredictor;
 
     [SerializeField] float heightAboveTrajectory = 10f;
-    [SerializeField] float distanceFromTrajectory = 20f;
     [SerializeField] float offsetFromTrajectory = 30f;
     [SerializeField] float minCameraHeight = 10f;
 
