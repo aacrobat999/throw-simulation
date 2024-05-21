@@ -17,8 +17,6 @@ public class ProjectileThrow : MonoBehaviour
     [SerializeField] public CannonBall objectToThrow;
 
     [SerializeField] TextMeshProUGUI distanceText;
-    [SerializeField] TextMeshProUGUI massText;
-    [SerializeField] TextMeshProUGUI dragText;
 
 
     [HideInInspector] public CannonBall thrownObject;

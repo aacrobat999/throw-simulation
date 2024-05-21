@@ -27,9 +27,13 @@ public class TrajectoryBall : MonoBehaviour
     {
         isMouseOver = true;
         directionArrow.SetActive(true);
-        canvas.gameObject.SetActive(true);
-        vectorText.text = transform.forward.ToString();
-        velocityText.text = velocityValue.ToString();
+
+        if (CameraManager.i.currentCamera != 2)
+        {
+            canvas.gameObject.SetActive(true);
+            vectorText.text = transform.forward.ToString();
+            velocityText.text = velocityValue.ToString();
+        }
     }
 
     private void OnMouseExit()

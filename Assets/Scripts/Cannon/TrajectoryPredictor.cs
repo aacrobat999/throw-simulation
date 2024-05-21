@@ -21,9 +21,6 @@ public class TrajectoryPredictor : MonoBehaviour
     [SerializeField, Range(1.05f, 2f), Tooltip("The raycast overlap between points in the trajectory, this is a multiplier of the length between points. 2 = twice as long")]
     float rayOverlap = 1.1f;
 
-    [SerializeField, Range(1.05f, 2f), Tooltip("Simulation of air friction")]
-    float airFriction = 0.99f;
-
     [SerializeField, Tooltip("To display all arrows check it as true")]
     public bool displayAllArrows = false;
 

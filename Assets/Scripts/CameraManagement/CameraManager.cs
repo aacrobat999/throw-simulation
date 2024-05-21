@@ -7,6 +7,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] Camera mainCamera;
     [SerializeField] ShotViewCamera shotViewCam;
     [SerializeField] SideViewCamera sideViewCam;
+    [SerializeField] GameObject controls;
 
     public static CameraManager i;
 
@@ -22,6 +23,11 @@ public class CameraManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.L))
             StartTransitionBackToMain();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            controls.SetActive(true);
+        else if (Input.GetKeyUp(KeyCode.Escape))
+            controls.SetActive(false);
     }
 
     public void StartTransitionTo()
