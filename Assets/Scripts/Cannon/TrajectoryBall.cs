@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class TrajectoryBall : MonoBehaviour
@@ -5,15 +6,14 @@ public class TrajectoryBall : MonoBehaviour
     [SerializeField] GameObject directionArrow;
     float velocityValue;
 
+    [SerializeField] Canvas canvas;
+    [SerializeField] TextMeshProUGUI vectorText;
+    [SerializeField] TextMeshProUGUI velocityText;
+
     [HideInInspector] public bool isMouseOver = false;
 
     public void Update()
     {
-        if (isMouseOver)
-        {
-            Debug.Log("Velocity at this point: " + velocityValue);
-        }
-
         if (!isMouseOver)
             directionArrow.SetActive(TrajectoryPredictor.i.displayAllArrows);
     }
@@ -27,11 +27,15 @@ public class TrajectoryBall : MonoBehaviour
     {
         isMouseOver = true;
         directionArrow.SetActive(true);
+        canvas.gameObject.SetActive(true);
+        vectorText.text = transform.forward.ToString();
+        velocityText.text = velocityValue.ToString();
     }
 
     private void OnMouseExit()
     {
         isMouseOver = false;
         directionArrow.SetActive(false);
+        canvas.gameObject.SetActive(false);
     }
 }

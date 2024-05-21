@@ -21,18 +21,25 @@ public class TrajectoryPredictor : MonoBehaviour
     [SerializeField, Range(1.05f, 2f), Tooltip("The raycast overlap between points in the trajectory, this is a multiplier of the length between points. 2 = twice as long")]
     float rayOverlap = 1.1f;
 
+    [SerializeField, Range(1.05f, 2f), Tooltip("Simulation of air friction")]
+    float airFriction = 0.99f;
+
     [SerializeField, Tooltip("To display all arrows check it as true")]
     public bool displayAllArrows = false;
 
     [SerializeField] TextMeshProUGUI highestPointText;
     [SerializeField] TextMeshProUGUI totalDistanceText;
     [SerializeField] TextMeshProUGUI horizontalDistanceText;
-    [SerializeField] TextMeshProUGUI currentVelocityText;
+    [SerializeField] public TextMeshProUGUI currentVelocityText;
+    [SerializeField] TextMeshProUGUI maxVelocityText;
+    [SerializeField] TextMeshProUGUI impactVelocityText;
 
     float highestPoint;
     float totalDistance;
     float horizontalDistance;
     float currentVelocity;
+    float maxVelocity;
+    float impactVelocity;
 
     public static TrajectoryPredictor i { get; private set; }
 
@@ -60,6 +67,8 @@ public class TrajectoryPredictor : MonoBehaviour
         highestPoint = position.y;
         totalDistance = 0f;
         horizontalDistance = 0f;
+        maxVelocity = 0f;
+        impactVelocity = 0f;
 
         for (int i = 0; i < maxPoints; i++)
         {
@@ -67,6 +76,11 @@ public class TrajectoryPredictor : MonoBehaviour
             Vector3 nextPosition = position + velocity * increment;
 
             currentVelocity = velocity.magnitude;
+
+            if (currentVelocity > maxVelocity)
+            {
+                maxVelocity = currentVelocity;
+            }
 
             if (nextPosition.y > highestPoint)
             {
@@ -102,9 +116,10 @@ public class TrajectoryPredictor : MonoBehaviour
             trajectoryLine.SetPosition(i, position);
         }
 
+        impactVelocity = currentVelocity;
+
         UpdateUI();
     }
-
 
     public void PredictTrajectory(ProjectileProperties projectile)
     {
@@ -116,6 +131,7 @@ public class TrajectoryPredictor : MonoBehaviour
         highestPoint = position.y;
         totalDistance = 0f;
         horizontalDistance = 0f;
+        maxVelocity = 0f;
 
         UpdateLineRender(maxPoints, (0, position));
 
@@ -125,6 +141,11 @@ public class TrajectoryPredictor : MonoBehaviour
             nextPosition = position + velocity * increment;
 
             currentVelocity = velocity.magnitude;
+
+            if (currentVelocity > maxVelocity)
+            {
+                maxVelocity = currentVelocity;
+            }
 
             if (nextPosition.y > highestPoint)
             {
@@ -142,6 +163,7 @@ public class TrajectoryPredictor : MonoBehaviour
             {
                 UpdateLineRender(i, (i - 1, hit.point));
                 MoveHitMarker(hit);
+                impactVelocity = currentVelocity;
                 break;
             }
 
@@ -149,6 +171,8 @@ public class TrajectoryPredictor : MonoBehaviour
             position = nextPosition;
             UpdateLineRender(maxPoints, (i, position));
         }
+
+        impactVelocity = currentVelocity;
 
         UpdateUI();
     }
@@ -200,13 +224,6 @@ public class TrajectoryPredictor : MonoBehaviour
         return positions;
     }
 
-    void UpdateUI()
-    {
-        highestPointText.text = highestPoint.ToString("F2");
-        totalDistanceText.text = totalDistance.ToString("F2");
-        horizontalDistanceText.text = horizontalDistance.ToString("F2");
-        currentVelocityText.text = currentVelocity.ToString("F2");
-    }
 
     public float CalculateDistance(Vector3 a, Vector3 b)
     {
@@ -217,6 +234,15 @@ public class TrajectoryPredictor : MonoBehaviour
     }
 
     #region UI
+    void UpdateUI()
+    {
+        highestPointText.text = highestPoint.ToString("F2");
+        totalDistanceText.text = totalDistance.ToString("F2");
+        horizontalDistanceText.text = horizontalDistance.ToString("F2");
+        currentVelocityText.text = currentVelocity.ToString("F2");
+        maxVelocityText.text = maxVelocity.ToString("F2");
+        impactVelocityText.text = impactVelocity.ToString("F2");
+    }
 
     public void DisplayAllArrows(Toggle newValue)
     {

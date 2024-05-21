@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.DebugUI;
 using UnityEngine.Windows;
 
 [RequireComponent(typeof(TrajectoryPredictor))]
@@ -13,17 +12,22 @@ public class ProjectileThrow : MonoBehaviour
 
     [SerializeField, Range(0.0f, 50.0f)] public float _gravityScale = 9.81f;
 
-    [SerializeField] Transform StartPosition;
+    [SerializeField] Transform startPosition;
 
-    [SerializeField] CannonBall objectToThrow;
+    [SerializeField] public CannonBall objectToThrow;
 
     [SerializeField] TextMeshProUGUI distanceText;
+    [SerializeField] TextMeshProUGUI massText;
+    [SerializeField] TextMeshProUGUI dragText;
+
 
     [HideInInspector] public CannonBall thrownObject;
     [HideInInspector] public Vector3 startingPosition;
 
     TrajectoryPredictor trajectoryPredictor;
     public InputAction fire;
+
+    bool hasFired = false;
 
     private void Awake()
     {
@@ -34,8 +38,8 @@ public class ProjectileThrow : MonoBehaviour
     {
         trajectoryPredictor = GetComponent<TrajectoryPredictor>();
 
-        if (StartPosition == null)
-            StartPosition = transform;
+        if (startPosition == null)
+            startPosition = transform;
 
         fire.Enable();
         fire.performed += ThrowObject;
@@ -45,6 +49,12 @@ public class ProjectileThrow : MonoBehaviour
     {
         Physics.gravity = new Vector3(0, -_gravityScale, 0);
         Predict();
+
+        if (!hasFired)
+            trajectoryPredictor.currentVelocityText.text = "0";
+
+        if (thrownObject != null && thrownObject.hasHitGround)
+            hasFired = false;
     }
 
     void Predict()
@@ -57,8 +67,8 @@ public class ProjectileThrow : MonoBehaviour
         ProjectileProperties properties = new ProjectileProperties();
         Rigidbody r = objectToThrow.GetComponent<Rigidbody>();
 
-        properties.direction = StartPosition.forward;
-        properties.initialPosition = StartPosition.position;
+        properties.direction = startPosition.forward;
+        properties.initialPosition = startPosition.position;
         properties.initialSpeed = force;
         properties.mass = r.mass;
         properties.drag = r.drag;
@@ -73,16 +83,18 @@ public class ProjectileThrow : MonoBehaviour
             CameraManager.i.StartTransitionTo();
 
             // Throw the object
-            thrownObject = Instantiate(objectToThrow, StartPosition.position, Quaternion.identity);
-            thrownObject.rigidBody.AddForce(StartPosition.forward * force, ForceMode.Impulse);
+
+            hasFired = true;
+            thrownObject = Instantiate(objectToThrow, startPosition.position, Quaternion.identity);
+            thrownObject.rigidBody.AddForce(startPosition.forward * force, ForceMode.Impulse);
 
             trajectoryPredictor.SpawnTrajectoryBalls(ProjectileData());
         }
     }
 
-    public void UpdateDistanceText(float distance) => distanceText.text = distance.ToString("F2");
 
     #region UI
+    public void UpdateDistanceText(float distance) => distanceText.text = distance.ToString("F2");
 
     public void ChangeGravityScale(TMP_InputField input)
     {
@@ -131,6 +143,7 @@ public class ProjectileThrow : MonoBehaviour
             }
         }
     }
+
     public void ChangeHeightValue(TMP_InputField input)
     {
         if (string.IsNullOrEmpty(input.text))
@@ -154,5 +167,65 @@ public class ProjectileThrow : MonoBehaviour
             }
         }
     }
+    public void ChangeMassValue(TMP_InputField input)
+    {
+        Rigidbody r = objectToThrow.GetComponent<Rigidbody>();
+
+        if (string.IsNullOrEmpty(input.text))
+            return;
+
+        if (float.TryParse(input.text, out float newMass))
+        {
+            if (newMass <= 0.1)
+            {
+                r.mass = 0.1f;
+                input.text = r.mass.ToString();
+            }
+            else if (newMass >= 5)
+            {
+                r.mass = 0.1f;
+                input.text = r.mass.ToString();
+            }
+            else
+            {
+                r.mass = newMass;
+            }
+        }
+    }
+    public void ChangeDragValue(TMP_InputField input)
+    {
+        Rigidbody r = objectToThrow.GetComponent<Rigidbody>();
+
+        if (string.IsNullOrEmpty(input.text))
+            return;
+
+        if (float.TryParse(input.text, out float newDrag))
+        {
+            if (newDrag <= 0.01)
+            {
+                r.drag = 0.1f;
+                input.text = r.mass.ToString();
+            }
+            else if (newDrag >= 2)
+            {
+                r.drag = 2f;
+                input.text = r.drag.ToString();
+            }
+            else
+            {
+                r.drag = newDrag;
+            }
+        }
+    }
     #endregion
 }
+
+public struct ProjectileProperties
+{
+    public Vector3 direction;
+    public Vector3 initialPosition;
+    public float initialSpeed;
+    public float mass;
+    public float drag;
+}
+

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditorInternal.VR;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,9 +38,21 @@ public class UISlider : MonoBehaviour
         input.text = slider.value.ToString("F2");
         predictor.maxPoints = (int)slider.value;
     }
-    public void ChangeHiegthValue(ProjectileThrow projectile)
+    public void ChangeHeightValue(ProjectileThrow projectile)
     {
         input.text = slider.value.ToString("F2");
         projectile.transform.position = new Vector3(0, slider.value, 0) + projectile.startingPosition;
+    }
+    public void ChangeMassValue(ProjectileThrow projectile)
+    {
+        Rigidbody r = projectile.objectToThrow.GetComponent<Rigidbody>();
+        input.text = slider.value.ToString("F2");
+        r.mass = slider.value;
+    }
+    public void ChangeDragValue(ProjectileThrow projectile)
+    {
+        Rigidbody r = projectile.objectToThrow.GetComponent<Rigidbody>();
+        input.text = slider.value.ToString("F2");
+        r.drag = slider.value;
     }
 }

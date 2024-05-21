@@ -127,5 +127,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18dafa1203e556b40b8bfb663a8450fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hasHitGround: 0
   rigidBody: {fileID: 7804654149948344941}
+  hasHitGround: 0
