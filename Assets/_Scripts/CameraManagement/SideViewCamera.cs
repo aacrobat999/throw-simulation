@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SideViewCamera : MonoBehaviour
@@ -8,7 +9,7 @@ public class SideViewCamera : MonoBehaviour
     [SerializeField] TrajectoryPredictor trajectoryPredictor;
 
     [SerializeField] float heightAboveTrajectory = 10f;
-    [SerializeField] float offsetFromTrajectory = 30f;
+    [SerializeField] public float offsetFromTrajectory = 30f;
     [SerializeField] float minCameraHeight = 10f;
 
     void Update()
@@ -36,6 +37,30 @@ public class SideViewCamera : MonoBehaviour
                 transform.position = targetPosition;
 
                 transform.LookAt(averagePosition);
+            }
+        }
+    }
+
+    public void ChangeCameraOffset(TMP_InputField input)
+    {
+        if (string.IsNullOrEmpty(input.text))
+            return;
+
+        if (float.TryParse(input.text, out float newOffset))
+        {
+            if (newOffset <= 10)
+            {
+                offsetFromTrajectory = 10;
+                input.text = offsetFromTrajectory.ToString();
+            }
+            else if (newOffset >= 100)
+            {
+                offsetFromTrajectory = 100;
+                input.text = offsetFromTrajectory.ToString();
+            }
+            else
+            {
+                offsetFromTrajectory = newOffset;
             }
         }
     }

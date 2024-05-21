@@ -128,7 +128,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 7804654149948344941}
-  hasHitGround: 0
   explosions:
   - {fileID: 1007127540951276610, guid: 5cf5b277b0ae6d34d9f63723409de2fd, type: 3}
   - {fileID: 1620140131458703901, guid: 87a8e44b131471449af109a152a629bf, type: 3}
@@ -137,3 +136,10 @@ MonoBehaviour:
   - {fileID: 9111320563476075608, guid: 44e4de0c1c7b29e4da07da9eb5c489d4, type: 3}
   - {fileID: 3654741155788002240, guid: 18c798d0b36702f47bb9fc4b5941611c, type: 3}
   - {fileID: 3352391191284423539, guid: c18280fb53ba1ce479b3281fbdbf7833, type: 3}
+  explosionSounds:
+  - {fileID: 8300000, guid: 054dfeef64e2c524892018bf35595818, type: 3}
+  - {fileID: 8300000, guid: c52ec3f19d61ea049b74e3782446b8f0, type: 3}
+  - {fileID: 8300000, guid: 80f540d592ac3e242a320ff27c6c1f9f, type: 3}
+  - {fileID: 8300000, guid: 7cb2f7e513dba3c49a7bd0c2b6b1814d, type: 3}
+  - {fileID: 8300000, guid: 4153c4c13890cc343ad50bde5158e801, type: 3}
+  hasHitGround: 0

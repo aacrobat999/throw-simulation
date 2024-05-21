@@ -20,8 +20,12 @@ public class ProjectileThrow : MonoBehaviour
 
     [SerializeField] ParticleSystem[] explosions;
 
+    [SerializeField] AudioClip[] explosionSounds;
+
+
     [HideInInspector] public CannonBall thrownObject;
     [HideInInspector] public Vector3 startingPosition;
+
 
     TrajectoryPredictor trajectoryPredictor;
     public InputAction fire;
@@ -99,9 +103,12 @@ public class ProjectileThrow : MonoBehaviour
     void TriggerExplosion()
     {
         int randomIndex = Random.Range(0, explosions.Length);
+        int randomSound = Random.Range(0, explosionSounds.Length);
+
         ParticleSystem selectedExplosion = Instantiate(explosions[randomIndex]);
         selectedExplosion.transform.position = startPosition.position;
         selectedExplosion.Play();
+        AudioManager.i.PlaySfx(explosionSounds[randomSound]);
     }
 
     #region UI

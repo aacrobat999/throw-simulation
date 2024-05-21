@@ -57,4 +57,9 @@ public class UISlider : MonoBehaviour
         input.text = slider.value.ToString("F2");
         predictor.distanceBetweenBalls = (int)slider.value;
     }
+    public void ChangeCameraOffset(SideViewCamera camera)
+    {
+        input.text = slider.value.ToString("F2");
+        camera.offsetFromTrajectory = (int)slider.value;
+    }
 }

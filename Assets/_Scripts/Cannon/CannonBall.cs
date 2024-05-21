@@ -5,10 +5,13 @@ public class CannonBall : MonoBehaviour
 {
     [SerializeField] public Rigidbody rigidBody;
 
-    [HideInInspector] public bool hasHitGround = false;
 
     [SerializeField] ParticleSystem[] explosions;
 
+    [SerializeField] AudioClip[] explosionSounds;
+
+    [HideInInspector] public bool hasHitGround = false;
+    
     private void OnCollisionEnter(Collision collision)
     {
         if (!hasHitGround && collision.collider.CompareTag("Ground"))
@@ -21,9 +24,12 @@ public class CannonBall : MonoBehaviour
 
     void TriggerExplosion()
     {
+        int randomSound = Random.Range(0, explosionSounds.Length);
         int randomIndex = Random.Range(0, explosions.Length);
+        
         ParticleSystem selectedExplosion = Instantiate(explosions[randomIndex], transform.position, Quaternion.identity);
         selectedExplosion.Play();
+        AudioManager.i.PlaySfx(explosionSounds[randomSound]);
     }
 }
 
