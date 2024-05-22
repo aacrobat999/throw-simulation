@@ -201,14 +201,14 @@ public class ProjectileThrow : MonoBehaviour
 
         if (float.TryParse(input.text, out float newMass))
         {
-            if (newMass <= 0.1)
+            if (newMass <= 0.1f)
             {
                 r.mass = 0.1f;
                 input.text = r.mass.ToString();
             }
             else if (newMass >= 5)
             {
-                r.mass = 0.1f;
+                r.mass = 5;
                 input.text = r.mass.ToString();
             }
             else
@@ -227,7 +227,7 @@ public class ProjectileThrow : MonoBehaviour
 
         if (float.TryParse(input.text, out float newDrag))
         {
-            if (newDrag <= 0.01)
+            if (newDrag <= 0.1)
             {
                 r.drag = 0.1f;
                 input.text = r.mass.ToString();
